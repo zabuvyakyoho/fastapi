@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
 from .routers import auth, todos, admin, users
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 
 app = FastAPI()
@@ -13,6 +14,9 @@ app = FastAPI()
 Base.metadata.create_all(bind=engine)
 
 templates = Jinja2Templates(directory="TodoApp/templates")
+
+app.mount("/static", StaticFiles(directory="TodoApp/static"), name="static")
+
 
 
 @app.get("/")
