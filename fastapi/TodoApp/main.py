@@ -1,10 +1,10 @@
 from fastapi import APIRouter, FastAPI, Depends, HTTPException, Request
-from .models import Base
-from .database import engine, SessionLocal
+from models import Base
+from database import engine, SessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, Field
-from .routers import auth, todos, admin, users
+from routers import auth, todos, admin, users
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 
@@ -13,10 +13,9 @@ app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
 
-templates = Jinja2Templates(directory="TodoApp/templates")
+templates = Jinja2Templates(directory="templates")
 
-app.mount("/static", StaticFiles(directory="TodoApp/static"), name="static")
-
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/")

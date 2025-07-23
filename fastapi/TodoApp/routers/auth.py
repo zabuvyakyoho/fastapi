@@ -3,8 +3,8 @@ from tempfile import template
 from typing import Annotated
 from fastapi import Depends, FastAPI, APIRouter, HTTPException, status, Request
 from pydantic import BaseModel
-from ..database import SessionLocal
-from ..models import Users
+from database import SessionLocal
+from models import Users
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm, OAuth2AuthorizationCodeBearer
@@ -47,7 +47,7 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-templates = Jinja2Templates(directory="TodoApp/templates")
+templates = Jinja2Templates(directory="C:/Users/OS/Documents/fastapi/TodoApp/templates")
 
 ### Pages ###
 
