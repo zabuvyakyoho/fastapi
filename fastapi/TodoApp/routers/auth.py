@@ -47,7 +47,7 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-templates = Jinja2Templates(directory="C:/Users/OS/Documents/fastapi/TodoApp/templates")
+templates = Jinja2Templates(directory="templates")
 
 ### Pages ###
 
