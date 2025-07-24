@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI + JS Interaction Example</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .step { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .code { background: #f5f5f5; padding: 10px; border-radius: 3px; font-family: monospace; }
+        .arrow { font-size: 24px; text-align: center; margin: 10px 0; }
+        .browser { background: #e3f2fd; }
+        .server { background: #f3e5f5; }
+        .http { background: #fff3e0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 FastAPI + JavaScript Взаємодія</h1>
+        
+        <div class="step browser">
+            <h3>1️⃣ Браузер завантажує HTML сторінку</h3>
+            <div class="code">
+                GET http://127.0.0.1:8000/auth/register-page
+            </div>
+            <p>FastAPI віддає HTML файл з JavaScript кодом</p>
+        </div>
+
+        <div class="arrow">⬇️</div>
+
+        <div class="step server">
+            <h3>2️⃣ FastAPI обробляє запит</h3>
+            <div class="code">
+@router.get("/register-page")<br>
+def render_register_page(request: Request):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return templates.TemplateResponse("register.html", {"request": request})
+            </div>
+        </div>
+
+        <div class="arrow">⬇️</div>
+
+        <div class="step browser">
+            <h3>3️⃣ JavaScript виконується в браузері</h3>
+            <div class="code">
+// Користувач натискає Submit<br>
+document.getElementById('registerForm').addEventListener('submit', async function(event) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;event.preventDefault();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Збираємо дані з форми<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const formData = new FormData(form);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const data = Object.fromEntries(formData.entries());<br>
+});
+            </div>
+        </div>
+
+        <div class="arrow">⬇️</div>
+
+        <div class="step http">
+            <h3>4️⃣ JavaScript робить HTTP запит</h3>
+            <div class="code">
+const response = await fetch('/auth/', {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;method: 'POST',<br>
+&nbsp;&nbsp;&nbsp;&nbsp;headers: { 'Content-Type': 'application/json' },<br>
+&nbsp;&nbsp;&nbsp;&nbsp;body: JSON.stringify({<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username: "john",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;email: "john@example.com",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;password: "secret123"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;})<br>
+});
+            </div>
+            <p><strong>HTTP Request:</strong> POST http://127.0.0.1:8000/auth/</p>
+        </div>
+
+        <div class="arrow">⬇️</div>
+
+        <div class="step server">
+            <h3>5️⃣ FastAPI отримує і обробляє дані</h3>
+            <div class="code">
+@router.post('/', status_code=201)<br>
+async def create_user(create_user_request: CreateUserRequest):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;# create_user_request.username = "john"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;# create_user_request.email = "john@example.com"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;# Створюємо користувача в базі даних<br>
+&nbsp;&nbsp;&nbsp;&nbsp;user = Users(**create_user_request.dict())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;db.add(user)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;db.commit()
+            </div>
+        </div>
+
+        <div class="arrow">⬇️</div>
+
+        <div class="step http">
+            <h3>6️⃣ FastAPI повертає відповідь</h3>
+            <div class="code">
+HTTP/1.1 201 Created<br>
+Content-Type: application/json<br>
+<br>
+{"message": "User created successfully"}
+            </div>
+        </div>
+
+        <div class="arrow">⬇️</div>
+
+        <div class="step browser">
+            <h3>7️⃣ JavaScript обробляє відповідь</h3>
+            <div class="code">
+if (response.ok) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Успіх - перенаправляємо користувача<br>
+&nbsp;&nbsp;&nbsp;&nbsp;window.location.href = '/auth/login-page';<br>
+} else {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;// Помилка - показуємо alert<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const errorData = await response.json();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;alert(`Error: ${errorData.detail}`);<br>
+}
+            </div>
+        </div>
+
+        <hr style="margin: 30px 0;">
+
+        <div class="step">
+            <h3>🔑 Ключові моменти:</h3>
+            <ul>
+                <li><strong>URL пути:</strong> JavaScript використовує ті ж URL що й FastAPI роутери</li>
+                <li><strong>JSON формат:</strong> Дані передаються в JSON форматі</li>
+                <li><strong>HTTP методи:</strong> GET, POST, PUT, DELETE</li>
+                <li><strong>Заголовки:</strong> Content-Type, Authorization</li>
+                <li><strong>Асинхронність:</strong> JavaScript використовує async/await для HTTP запитів</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>📁 Структура проекту:</h3>
+            <div class="code">
+fastapi_project/<br>
+├── main.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# FastAPI додаток<br>
+├── routers/<br>
+│&nbsp;&nbsp;&nbsp;└── auth.py&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Роутери (@router.post('/'), @router.get('/register-page'))<br>
+└── templates/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;└── register.html&nbsp;&nbsp;# HTML + JavaScript код
+            </div>
+        </div>
+    </div>
+</body>
+</html>

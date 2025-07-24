@@ -175,6 +175,9 @@
             const formData = new FormData(form);
             const data = Object.fromEntries(formData.entries());
 
+                    console.log("Form data:", data); // ✅ Додайте це
+
+
             if (data.password !== data.password2) {
                 alert("Passwords do not match");
                 return;
@@ -183,27 +186,36 @@
             const payload = {
                 email: data.email,
                 username: data.username,
-                first_name: data.firstname,
-                last_name: data.lastname,
+                first_name: data.first_name,
+                last_name: data.last_name,
                 role: data.role,
                 phone_number: data.phone_number,
                 password: data.password
             };
 
+                console.log("Payload:", payload); // ✅ Додайте це
+
+
             try {
-                const response = await fetch('/auth', {
+                const response = await fetch('/auth/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(payload)
                 });
+                    
+                console.log("Response status:", response.status); // ✅ Додайте це
+
 
                 if (response.ok) {
                     window.location.href = '/auth/login-page';
                 } else {
                     // Handle error
                     const errorData = await response.json();
+                    
+                    console.log("Error data:", errorData); // ✅ Додайте це
+
                     alert(`Error: ${errorData.message}`);
                 }
             } catch (error) {
