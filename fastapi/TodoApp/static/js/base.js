@@ -1,3 +1,4 @@
+
     // Add Todo JS
     const todoForm = document.getElementById('todoForm');
     if (todoForm) {
@@ -124,17 +125,27 @@
 
     // Login JS
     const loginForm = document.getElementById('loginForm');
+    console.log('loginForm: ', loginForm)
     if (loginForm) {
         loginForm.addEventListener('submit', async function (event) {
             event.preventDefault();
+            const pwd = document.getElementById('password');
+            const username = document.getElementById('username');
+            console.log('pwd: ', pwd.value)
+            console.log('username:', username.value)
 
-            const form = event.target;
-            const formData = new FormData(form);
 
+
+            // const form = event.target;
+            const formData = new FormData(loginForm);
+            console.log('formdata: ', formData)
+            console.log('formdata: ', formData.get('username'))
             const payload = new URLSearchParams();
-            for (const [key, value] of formData.entries()) {
-                payload.append(key, value);
-            }
+            // for (const [key, value] of formData.entries()) {
+            //     payload.append(key, value);
+            // }
+            payload.append(username, username.value)
+            payload.append(password, pwd.value)
 
             try {
                 const response = await fetch('/auth/token', {
@@ -144,15 +155,17 @@
                     },
                     body: payload.toString()
                 });
-
+                console.log('response: ', response.json())
                 if (response.ok) {
+                    console.log('response is OK')
                     // Handle success (e.g., redirect to dashboard)
                     const data = await response.json();
                     // Delete any cookies available
-                    logout();
+                    // logout();
                     // Save token to cookie
-                    document.cookie = `access_token=${data.access_token}; path=/`;
-                    window.location.href = '/todos/todo-page'; // Change this to your desired redirect page
+                    document.cookie = 'access_token=${data.access_token}; path=/';
+                    console.log(document.cookie)
+                    // window.location.href = '/todos/todo-page'; // Change this to your desired redirect page
                 } else {
                     // Handle error
                     const errorData = await response.json();
@@ -163,6 +176,8 @@
                 alert('An error occurred. Please try again.');
             }
         });
+    } else {
+        console.log('I fucked UP!!!')
     }
 
     // Register JS
